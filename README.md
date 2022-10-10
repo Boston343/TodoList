@@ -16,10 +16,11 @@ Todo list using express.js.
     MAILCHIMP_SERVER = your_server
     MAILCHIMP_LISTID = your_list_id
     ```
--   Node modules - inside project run `npm install express ejs dotenv`
+-   Node modules - inside project run `npm install express ejs`
     -   express
-	-	ejs
-    -   dotenv
+    -	ejs
+    -   eslint - if desired for linting
+    	-   run `npm init @eslint/config` to setup (after you have `package.json` files from `npm init`)
 
 ## Includes
 
