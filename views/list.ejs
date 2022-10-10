@@ -6,30 +6,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo List</title>
+
+    <!-- Custom style sheet -->
+    <link href="css/styles.css" rel="stylesheet">
 </head>
 
 <body>
-    <main>
+    <div class="box" id="heading">
         <h1>
-            <%= day %>
+            <%= listTitle %>
         </h1>
-        <ul>
-            <li>Buy Food</li>
-            <li>Cook Food</li>
-            <li>Eat Food</li>
-
-            <!-- add li for every item in our 'items' array -->
-            <% for ( let i=0; i < items.length; i++ ) { %>
-                <li><%= items[i] %> </li>
-            <% } %> 
-
-        </ul>
-        <form action="/newItem" method="post">
-            <label for="newItem">New Task: </label>
-            <input type="text" name="newItem" id="newItem" />
-            <button type="submit">Add Task</button>
+    </div>
+    <div class="box">
+        <!-- add li for every item in our 'items' array -->
+        <% for ( let i=0; i < items.length; i++ ) { %>
+            <div class="item">    
+                <input type="checkbox">
+                <p><%= items[i] %> </p>
+            </div>
+        <% } %>         
+        <form class="item" action="/newItem" method="post">
+            <input type="text" name="newItem" placeholder="New Item" autocomplete="off"/>
+            <button type="submit" name="list" value="<%= listTitle %>">+</button>
         </form>
-    </main>
+    </div>
 </body>
 
 </html>
