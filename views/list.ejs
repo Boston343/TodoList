@@ -2,15 +2,33 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo List</title>
 </head>
 
 <body>
     <main>
-        <h1>It's a <%=kindOfDay %>!</h1>
+        <h1>
+            <%= day %>
+        </h1>
+        <ul>
+            <li>Buy Food</li>
+            <li>Cook Food</li>
+            <li>Eat Food</li>
+
+            <!-- add li for every item in our 'items' array -->
+            <% for ( let i=0; i < items.length; i++ ) { %>
+                <li><%= items[i] %> </li>
+            <% } %> 
+
+        </ul>
+        <form action="/newItem" method="post">
+            <label for="newItem">New Task: </label>
+            <input type="text" name="newItem" id="newItem" />
+            <button type="submit">Add Task</button>
+        </form>
     </main>
 </body>
 

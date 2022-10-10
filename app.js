@@ -16,6 +16,9 @@ const __dirname = path.dirname(__filename);
 //      start looking for those files.
 app.use(express.static(path.join(__dirname, "/public")));
 
+// global variables
+var items = [];
+
 // -----------------------------------------------------------------------------------
 // ---------------------------------- Listening --------------------------------------
 // -----------------------------------------------------------------------------------
@@ -29,28 +32,26 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
     console.log("Server is up and running.");
 
+    // get current date and format it
     var today = new Date();
-    var currentDay = today.getDay();
-    var day = "";
-
-    // if today is saturday or sunday
-    if ( currentDay === 6 || currentDay === 0 ) {
-        day = "Weekend";
-        res.render("list",  {kindOfDay: day});
+    var dateOptions = {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
     }
-    else {
-        day = "Weekday";
-        res.render("list",  {kindOfDay: day});
-    }
+    var day = today.toLocaleDateString("en-US", dateOptions);
 
-    
+    // display page
+    res.render("list",  {day: day, items: items});   
     
 });
 
 // -----------------------------------------------------------------------------------
 // -------------------------------- Post Requests ------------------------------------
 // -----------------------------------------------------------------------------------
-//  main functionality
-app.post('/', (req, res) => {
-
+//  add new item to Todo List
+app.post('/newItem', (req, res) => {
+    items.push(req.body.newItem);
+    console.log("new item: " + req.body.newItem);
+    res.redirect("/");
 });
