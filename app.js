@@ -1,6 +1,6 @@
 import express from "express"; // npm install express
 import path from "path";
-import https from "https"; // for forming external get requests
+// import https from "https"; // for forming external get requests
 import { fileURLToPath } from "url";
 
 const app = express();
@@ -51,6 +51,12 @@ app.get("/", (req, res) => {
 // page for a workday
 app.get("/work", (req, res) => {
     res.render("list", { listTitle: "Work List", items: workItems });
+});
+
+// -----------------------------------------------------------------------------------
+// about me page
+app.get("/about", (req, res) => {
+    res.render("about", {});
 });
 
 // -----------------------------------------------------------------------------------

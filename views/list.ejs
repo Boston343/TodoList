@@ -1,17 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('header'); -%>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo List</title>
-
-    <!-- Custom style sheet -->
-    <link href="css/styles.css" rel="stylesheet">
-</head>
-
-<body>
     <div class="box" id="heading">
         <h1>
             <%= listTitle %>
@@ -20,16 +8,15 @@
     <div class="box">
         <!-- add li for every item in our 'items' array -->
         <% for ( let i=0; i < items.length; i++ ) { %>
-            <div class="item">    
-                <input type="checkbox">
-                <p><%= items[i] %> </p>
-            </div>
+        <div class="item">    
+            <input type="checkbox">
+            <p><%= items[i] %> </p>
+        </div>
         <% } %>         
         <form class="item" action="/newItem" method="post">
             <input type="text" name="newItem" placeholder="New Item" autocomplete="off"/>
             <button type="submit" name="list" value="<%= listTitle %>">+</button>
         </form>
     </div>
-</body>
 
-</html>
+<%- include('footer'); -%>
