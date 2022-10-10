@@ -4,6 +4,7 @@ import https from 'https';              // for forming external get requests
 import { fileURLToPath } from 'url';
 
 const app = express();
+app.set('view engine', 'ejs');          // using EJS
 const port = process.env.PORT || 3000;
 app.use(express.urlencoded({extended: true}));  // this is for parsing data from html form
 
@@ -28,9 +29,21 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
     console.log("Server is up and running.");
 
-    const homepage = "index.html";
-    res.sendFile(path.join(__dirname, "/src/" + homepage));
-    console.log('Sent:', __dirname + "/src/" + homepage);
+    var today = new Date();
+    var currentDay = today.getDay();
+    var day = "";
+
+    // if today is saturday or sunday
+    if ( currentDay === 6 || currentDay === 0 ) {
+        day = "Weekend";
+        res.render("list",  {kindOfDay: day});
+    }
+    else {
+        day = "Weekday";
+        res.render("list",  {kindOfDay: day});
+    }
+
+    
     
 });
 

@@ -16,8 +16,9 @@ Todo list using express.js.
     MAILCHIMP_SERVER = your_server
     MAILCHIMP_LISTID = your_list_id
     ```
--   Node modules - inside project run `npm install express dotenv`
+-   Node modules - inside project run `npm install express ejs dotenv`
     -   express
+	-	ejs
     -   dotenv
 
 ## Includes
