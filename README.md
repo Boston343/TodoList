@@ -9,8 +9,8 @@ You can add items to the list, and cross them out. Paths available include `loca
 -   Node modules - inside project run `npm install express ejs`
     -   express
     -	ejs
-    -   eslint - if desired for linting
-    	-   run `npm init @eslint/config` to setup (after you have `package.json` files from `npm init`)
+    -   eslint - if desired for linting 
+    	-   [ESLint Getting Started Guide](https://eslint.org/docs/latest/user-guide/getting-started)
 
 ## Includes
 
@@ -18,7 +18,6 @@ You can add items to the list, and cross them out. Paths available include `loca
     -   express
     -   path
     -   url
-    -   https
 -   EJS - Data retreival and manipulation
     -   Serving up HTML files with input from server
     -   Retreive data from form, manipulate, and respond to user with updated html file
