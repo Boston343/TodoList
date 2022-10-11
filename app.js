@@ -1,7 +1,11 @@
+// npm and express includes
 import express from "express"; // npm install express
 import path from "path";
-// import https from "https"; // for forming external get requests
 import { fileURLToPath } from "url";
+// import https from "https"; // for forming external get requests
+
+// local includes
+import * as date from "./src/date.js";
 
 const app = express();
 app.set("view engine", "ejs"); // using EJS
@@ -17,8 +21,8 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "/public")));
 
 // global variables
-var items = [];
-var workItems = [];
+const items = [];
+const workItems = [];
 
 // -----------------------------------------------------------------------------------
 // ---------------------------------- Listening --------------------------------------
@@ -34,16 +38,7 @@ app.listen(port, () => {
 app.get("/", (req, res) => {
     console.log("Server is up and running.");
 
-    // get current date and format it
-    let today = new Date();
-    let dateOptions = {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-    };
-    let day = today.toLocaleDateString("en-US", dateOptions);
-
-    // display page
+    let day = date.getDate();
     res.render("list", { listTitle: day, items: items });
 });
 
