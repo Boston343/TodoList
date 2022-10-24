@@ -1,5 +1,6 @@
 // npm and express includes
-import express from "express"; // npm install express
+import express from "express";
+import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
 // import https from "https"; // for forming external get requests
@@ -20,6 +21,73 @@ const __dirname = path.dirname(__filename);
 //      start looking for those files.
 app.use(express.static(path.join(__dirname, "/public")));
 
+// -----------------------------------------------------------------------------------
+// ------------------------------- Mongoose Setup ------------------------------------
+// -----------------------------------------------------------------------------------
+// connect to MongoDB
+mongoose.connect("mongodb://localhost:27017/todolistDB", {
+    useNewUrlParser: true,
+});
+
+// schema
+const itemSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, "Please type something in for your item name."],
+    },
+});
+
+// model: mongoose will auto make it plural "items"
+const Item = mongoose.model("Item", itemSchema);
+
+// -----------------------------------------------------------------------------------
+// testing
+
+// remove all items
+const deleted = await Item.deleteMany({});
+if (deleted.deletedCount >= 1) {
+    console.log("Deleted " + deleted.deletedCount + " items.");
+} else {
+    console.log("ERROR in deleting items. No items deleted.");
+}
+
+// async version
+// Item.deleteMany({}, (err, ret) => {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log("Deleted " + ret.deletedCount + " items.");
+//     }
+// });
+
+const item1 = new Item({
+    name: "Welcome to your todo list!",
+});
+
+const item2 = new Item({
+    name: "Hit the + button to add a new item.",
+});
+
+const item3 = new Item({
+    name: "<-- Hit this to delete an item.",
+});
+
+const defaultItems = [item1, item2, item3];
+
+// insert test items into db
+// synchronous version
+// const inserted = await Item.insertMany(defaultItems);
+// console.log(inserted);
+
+// async version
+Item.insertMany(defaultItems, (err, items) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("Inserted: " + items);
+    }
+});
+
 // global variables
 const items = [];
 const workItems = [];
@@ -39,7 +107,13 @@ app.get("/", (req, res) => {
     console.log("Server is up and running.");
 
     let day = date.getDate();
-    res.render("list", { listTitle: day, items: items });
+    Item.find((err, items) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("list", { listTitle: day, items: items });
+        }
+    });
 });
 
 // -----------------------------------------------------------------------------------
