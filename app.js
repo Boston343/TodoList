@@ -44,12 +44,13 @@ const Item = mongoose.model("Item", itemSchema);
 // testing
 
 // remove all items
-const deleted = await Item.deleteMany({});
-if (deleted.deletedCount >= 1) {
-    console.log("Deleted " + deleted.deletedCount + " items.");
-} else {
-    console.log("ERROR in deleting items. No items deleted.");
-}
+// synchronous version
+// const deleted = await Item.deleteMany({});
+// if (deleted.deletedCount >= 1) {
+//     console.log("Deleted " + deleted.deletedCount + " items.");
+// } else {
+//     console.log("ERROR in deleting items. No items deleted.");
+// }
 
 // async version
 // Item.deleteMany({}, (err, ret) => {
@@ -80,13 +81,13 @@ const defaultItems = [item1, item2, item3];
 // console.log(inserted);
 
 // async version
-Item.insertMany(defaultItems, (err, items) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("Inserted: " + items);
-    }
-});
+// Item.insertMany(defaultItems, (err, items) => {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log("Inserted: " + items);
+//     }
+// });
 
 // global variables
 const items = [];
@@ -104,14 +105,25 @@ app.listen(port, () => {
 // -----------------------------------------------------------------------------------
 // normal page for the day
 app.get("/", (req, res) => {
-    console.log("Server is up and running.");
-
     let day = date.getDate();
     Item.find((err, items) => {
         if (err) {
             console.log(err);
         } else {
-            res.render("list", { listTitle: day, items: items });
+            if (items.length === 0) {
+                // if nothing currently in collection, populate with starting items
+                Item.insertMany(defaultItems, (err, insertedItems) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("Inserted: " + insertedItems);
+                        res.redirect("/"); // reload so we get the items we just inserted
+                    }
+                });
+            } else {
+                // if already items in collection, just show them
+                res.render("list", { listTitle: day, items: items });
+            }
         }
     });
 });
@@ -138,8 +150,15 @@ app.post("/newItem", (req, res) => {
         console.log("new work item: " + req.body.newItem);
         res.redirect("/work");
     } else {
-        items.push(req.body.newItem);
         console.log("new item: " + req.body.newItem);
+
+        // add new item into db
+        const newItem = new Item({
+            name: req.body.newItem,
+        });
+        newItem.save();
+
+        // reload
         res.redirect("/");
     }
 });
