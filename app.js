@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
+import _ from "lodash";
 // import https from "https"; // for forming external get requests
 
 // local includes
@@ -37,8 +38,18 @@ const itemSchema = new mongoose.Schema({
     },
 });
 
+const listSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    items: [itemSchema],
+});
+
 // model: mongoose will auto make it plural "items"
 const Item = mongoose.model("Item", itemSchema);
+
+const List = mongoose.model("List", listSchema);
 
 // -----------------------------------------------------------------------------------
 // testing
@@ -89,10 +100,6 @@ const defaultItems = [item1, item2, item3];
 //     }
 // });
 
-// global variables
-const items = [];
-const workItems = [];
-
 // -----------------------------------------------------------------------------------
 // ---------------------------------- Listening --------------------------------------
 // -----------------------------------------------------------------------------------
@@ -105,7 +112,8 @@ app.listen(port, () => {
 // -----------------------------------------------------------------------------------
 // normal page for the day
 app.get("/", (req, res) => {
-    let day = date.getDate();
+    // let day = date.getDate();
+    let day = "Today";
     Item.find((err, items) => {
         if (err) {
             console.log(err);
@@ -129,15 +137,40 @@ app.get("/", (req, res) => {
 });
 
 // -----------------------------------------------------------------------------------
-// page for a workday
-app.get("/work", (req, res) => {
-    res.render("list", { listTitle: "Work List", items: workItems });
-});
-
-// -----------------------------------------------------------------------------------
 // about me page
 app.get("/about", (req, res) => {
     res.render("about", {});
+});
+
+// -----------------------------------------------------------------------------------
+// pages for any other list you want to create
+app.get("/:listTitle", (req, res) => {
+    const listTitle = _.lowerCase(req.params.listTitle);
+
+    // determine if list already exists
+    List.findOne({ name: listTitle }, (err, foundList) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (!foundList) {
+                // list doesn't exists, so create it and then display
+                const list = new List({
+                    name: listTitle,
+                    items: defaultItems,
+                });
+
+                list.save();
+
+                res.redirect("/" + listTitle);
+            } else {
+                // list exists, so just display it
+                res.render("list", {
+                    listTitle: _.capitalize(foundList.name),
+                    items: foundList.items,
+                });
+            }
+        }
+    });
 });
 
 // -----------------------------------------------------------------------------------
@@ -146,7 +179,7 @@ app.get("/about", (req, res) => {
 //  add new item to Todo List
 app.post("/newItem", (req, res) => {
     if (req.body.list === "Work List") {
-        workItems.push(req.body.newItem);
+        // workItems.push(req.body.newItem);
         console.log("new work item: " + req.body.newItem);
         res.redirect("/work");
     } else {
@@ -163,6 +196,7 @@ app.post("/newItem", (req, res) => {
     }
 });
 
+// -----------------------------------------------------------------------------------
 //  delete an item from Todo List
 app.post("/deleteItem", (req, res) => {
     const checkedItemId = req.body.checkbox;
