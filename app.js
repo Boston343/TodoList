@@ -162,3 +162,19 @@ app.post("/newItem", (req, res) => {
         res.redirect("/");
     }
 });
+
+//  delete an item from Todo List
+app.post("/deleteItem", (req, res) => {
+    const checkedItemId = req.body.checkbox;
+
+    // delete the item is question. Could also use .findByIdAndRemove()
+    Item.deleteOne({ _id: checkedItemId })
+        .then(() => {
+            console.log("Deleted item with _id: " + checkedItemId); // success
+        })
+        .catch((err) => {
+            console.log(err); // failure
+        });
+
+    res.redirect("/");
+});

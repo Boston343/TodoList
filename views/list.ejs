@@ -8,12 +8,12 @@
     <div class="box">
         <!-- add li for every item in our 'items' array -->
         <% items.forEach((item) => { %>
-        <div class="item">    
-            <input type="checkbox">
+        <form class="item" action="/deleteItem" method="post">   
+            <input onChange="this.form.submit()" name="checkbox" value="<%=item._id%>" type="checkbox">
             <p><%= item.name %> </p>
-        </div>
+        </form>
         <% }); %>         
-        <form class="item" action="/newItem" method="post">
+        <form class="item newItem" action="/newItem" method="post">
             <input type="text" name="newItem" placeholder="New Item" autocomplete="off"/>
             <button type="submit" name="list" value="<%= listTitle %>">+</button>
         </form>
