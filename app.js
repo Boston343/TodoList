@@ -214,15 +214,31 @@ app.post("/newItem", (req, res) => {
 //  delete an item from Todo List
 app.post("/deleteItem", (req, res) => {
     const checkedItemId = req.body.checkbox;
+    const listName = _.lowerCase(req.body.listName);
 
-    // delete the item is question. Could also use .findByIdAndRemove()
-    Item.deleteOne({ _id: checkedItemId })
-        .then(() => {
-            console.log("Deleted item with _id: " + checkedItemId); // success
-        })
-        .catch((err) => {
-            console.log(err); // failure
-        });
+    if (listName === "today") {
+        // delete the item is question. Could also use .findByIdAndRemove()
+        Item.deleteOne({ _id: checkedItemId })
+            .then(() => {
+                console.log("Deleted item with _id: " + checkedItemId); // success
+            })
+            .catch((err) => {
+                console.log(err); // failure
+            });
 
-    res.redirect("/");
+        res.redirect("/");
+    } else {
+        // find list, and delete from list array the specifc item
+        List.findOneAndUpdate(
+            { name: listName },
+            { $pull: { items: { _id: checkedItemId } } },
+            (err, foundList) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.redirect("/" + listName);
+                }
+            }
+        );
+    }
 });
