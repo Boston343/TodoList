@@ -130,7 +130,7 @@ app.get("/", (req, res) => {
                 });
             } else {
                 // if already items in collection, just show them
-                res.render("list", { listTitle: day, items: items });
+                res.render("list", { listName: day, items: items });
             }
         }
     });
@@ -144,28 +144,28 @@ app.get("/about", (req, res) => {
 
 // -----------------------------------------------------------------------------------
 // pages for any other list you want to create
-app.get("/:listTitle", (req, res) => {
-    const listTitle = _.lowerCase(req.params.listTitle);
+app.get("/:listName", (req, res) => {
+    const listName = _.lowerCase(req.params.listName);
 
     // determine if list already exists
-    List.findOne({ name: listTitle }, (err, foundList) => {
+    List.findOne({ name: listName }, (err, foundList) => {
         if (err) {
             console.log(err);
         } else {
             if (!foundList) {
                 // list doesn't exists, so create it and then display
                 const list = new List({
-                    name: listTitle,
+                    name: listName,
                     items: defaultItems,
                 });
 
                 list.save();
 
-                res.redirect("/" + listTitle);
+                res.redirect("/" + listName);
             } else {
                 // list exists, so just display it
                 res.render("list", {
-                    listTitle: _.capitalize(foundList.name),
+                    listName: _.capitalize(foundList.name),
                     items: foundList.items,
                 });
             }
@@ -178,21 +178,35 @@ app.get("/:listTitle", (req, res) => {
 // -----------------------------------------------------------------------------------
 //  add new item to Todo List
 app.post("/newItem", (req, res) => {
-    if (req.body.list === "Work List") {
-        // workItems.push(req.body.newItem);
-        console.log("new work item: " + req.body.newItem);
-        res.redirect("/work");
-    } else {
-        console.log("new item: " + req.body.newItem);
+    const listName = _.lowerCase(req.body.list);
+    const itemName = req.body.newItem;
 
-        // add new item into db
-        const newItem = new Item({
-            name: req.body.newItem,
-        });
+    const newItem = new Item({
+        name: itemName,
+    });
+
+    if (req.body.list === "Today") {
+        console.log("new item: " + itemName);
+
+        // add new item into items collection
         newItem.save();
 
         // reload
         res.redirect("/");
+    } else {
+        console.log("new item: " + itemName);
+
+        List.findOne({ name: listName }, (err, foundList) => {
+            if (err) {
+                console.log(err);
+            } else {
+                foundList.items.push(newItem);
+                foundList.save();
+            }
+        });
+
+        // reload
+        res.redirect("/" + listName);
     }
 });
 
