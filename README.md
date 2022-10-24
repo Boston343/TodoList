@@ -11,6 +11,7 @@ You can add items to the list, and cross them out. Paths available include `loca
     -   ejs
     -   mongoose
     -   lodash
+    -   dotenv
     -   eslint - if desired for linting
         -   [ESLint Getting Started Guide](https://eslint.org/docs/latest/user-guide/getting-started)
 -   MongoDB installed. You will need to install the free community server, as well as mongo shell
@@ -22,12 +23,6 @@ You can add items to the list, and cross them out. Paths available include `loca
 
 ## Includes
 
--   JS includes
-    -   express
-    -   path
-    -   url
-    -   lodash
-    -   mongoose
 -   Mongoose
     -   Connecting to local mongoose database
     -   CRUD operations
