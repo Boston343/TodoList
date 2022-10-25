@@ -4,8 +4,6 @@ Todo list using express.js, EJS, and mongoose. This was used for EJS and Mongoos
 
 You can add items to the list, and cross them out. Paths available include `localhost:3000/`, `localhost:3000/about`, and any other listname you want `localhost:3000/:listName`. You can clone this repo and install the node modules below and mongoDB to test on your local computer.
 
-Webpage hosted at https://reap3r-todo-list.glitch.me
-
 ## Dependencies
 
 -   Node modules - inside project run `npm install`
