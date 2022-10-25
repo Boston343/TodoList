@@ -215,11 +215,11 @@ app.post("/newItem", (req, res) => {
             } else {
                 foundList.items.push(newItem);
                 foundList.save();
+
+                // reload
+                res.redirect("/" + listName);
             }
         });
-
-        // reload
-        res.redirect("/" + listName);
     }
 });
 
@@ -234,12 +234,11 @@ app.post("/deleteItem", (req, res) => {
         Item.deleteOne({ _id: checkedItemId })
             .then(() => {
                 console.log("Deleted item with _id: " + checkedItemId); // success
+                res.redirect("/");
             })
             .catch((err) => {
                 console.log(err); // failure
             });
-
-        res.redirect("/");
     } else {
         // find list, and delete from list array the specifc item
         List.findOneAndUpdate(
